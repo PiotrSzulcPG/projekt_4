@@ -40,7 +40,7 @@ int main(int argc, char* args[])
     const int SCREEN_HEIGHT = 720;
     int x, y;
     /**
-     * TODO: Extend simulation
+     * # TODO: Extend simulation
      * 1. Set goal state of the mouse when clicking left mouse button (transform the coordinates to the quadrotor world! see visualizer TODO list)
      *    [x, y, 0, 0, 0, 0]
      * 2. Update PlanarQuadrotor from simulation when goal is changed
@@ -62,9 +62,10 @@ int main(int argc, char* args[])
     Eigen::Vector2f input = Eigen::Vector2f::Zero(2);
 
     /**
-     * TODO: Plot x, y, theta over time
+     * # TODO: Plot x, y, theta over time 
      * 1. Update x, y, theta history vectors to store trajectory of the quadrotor
      * 2. Plot trajectory using matplot++ when key 'p' is clicked
+     * # FIXME: Crash while creating graph (potential cause: no data in vectors)
     */
     std::vector<float> x_history;
     std::vector<float> y_history;
@@ -103,10 +104,11 @@ int main(int argc, char* args[])
                 {
                     if (e.key.keysym.sym == SDLK_p)
                     {
-                        // std::set<std::vector<double>> Y = {x_history, y_history, theta_history};
-                        // matplot::plot(Y);
-                        // matplot::show();
+                        std::set<std::vector<float>> Y = {x_history, y_history, theta_history};
+                        matplot::plot(Y);
+                        matplot::show();
                         std::cout << "Plotting x, y, theta!" << std::endl;
+                        // # TODO: Collect history of x, y, theta and store in vectors
                     }
                 }
                 
