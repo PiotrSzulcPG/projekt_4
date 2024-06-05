@@ -9,5 +9,7 @@
 #include "planar_quadrotor.h"
 #include "planar_quadrotor_visualizer.h"
 #include "lqr.h"
+// Included matplot
+#include "matplot/matplot.h"
 
 int init(std::shared_ptr<SDL_Window>& gWindow, std::shared_ptr<SDL_Renderer>& gRenderer, const int SCREEN_WIDTH, const int SCREEN_HEIGHT);

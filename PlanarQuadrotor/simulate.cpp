@@ -2,6 +2,7 @@
  * SDL window creation adapted from https://github.com/isJuhn/DoublePendulum
 */
 #include "simulate.h"
+#include <set>
 
 Eigen::MatrixXf LQR(PlanarQuadrotor &quadrotor, float dt) {
     /* Calculate LQR gain matrix */
@@ -37,7 +38,7 @@ int main(int argc, char* args[])
     std::shared_ptr<SDL_Renderer> gRenderer = nullptr;
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
-
+    int x, y;
     /**
      * TODO: Extend simulation
      * 1. Set goal state of the mouse when clicking left mouse button (transform the coordinates to the quadrotor world! see visualizer TODO list)
@@ -89,7 +90,24 @@ int main(int argc, char* args[])
                 else if (e.type == SDL_MOUSEMOTION)
                 {
                     SDL_GetMouseState(&x, &y);
+                    SDL_GetKeyboardState(NULL); // 'p' key is 'P'
                     std::cout << "Mouse position: (" << x << ", " << y << ")" << std::endl;
+                }
+                else if (e.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    std::cout << "MOUSE CLICKED!! Position of click: "<< x << ", " << y << std::endl;
+                    goal_state << x, y, 10, 10, 10, 10;
+                    std::cout << "KEY CLICKED (P): " << SDL_GetKeyName('p') << std::endl;
+                }
+                else if (e.type == SDL_KEYDOWN) 
+                {
+                    if (e.key.keysym.sym == SDLK_p)
+                    {
+                        // std::set<std::vector<double>> Y = {x_history, y_history, theta_history};
+                        // matplot::plot(Y);
+                        // matplot::show();
+                        std::cout << "Plotting x, y, theta!" << std::endl;
+                    }
                 }
                 
             }

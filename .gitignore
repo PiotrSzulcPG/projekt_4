@@ -4,8 +4,6 @@
 ###################
 *.com
 *.class
-*.dll
-*.exe
 *.o
 *.so
 
@@ -39,7 +37,9 @@ ehthumbs.db
 Thumbs.db
 
 # Added by Piotr Szulc
-build
+# TODO: Check if build/Debug/SDL2d.dll is excluded from .gitignore
+build/*
+!build/Debug
 .vs
 /CMakeSettings.json
 .vscode
