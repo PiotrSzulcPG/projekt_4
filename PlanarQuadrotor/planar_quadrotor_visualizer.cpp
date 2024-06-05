@@ -10,24 +10,50 @@ PlanarQuadrotorVisualizer::PlanarQuadrotorVisualizer(PlanarQuadrotor *quadrotor_
  */
 void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer> &gRenderer) {
     Eigen::VectorXf state = quadrotor_ptr->GetState();
-    float q_x, q_y, q_theta;
+    Sint16 q_x, q_y, q_theta;
+    double q_speedL, q_speedP; // Speed of propellers, for sound and speed of animation
 
     /* x, y, theta coordinates */
     q_x = state[0];
     q_y = state[1];
     q_theta = state[2];
 
+
+    bool DEBUG = true;
+    if (DEBUG) {
+        q_x = 100;
+        q_y = 100;
+        q_speedL = 10;
+        q_speedP = 10;
+    }
+
+    Sint16 q_x_propL = q_x + 0;
+    Sint16 q_x_propP = q_x + 100;
+    Uint32 ticks = SDL_GetTicks();
+    ticks /= 1;
+
+    
+
     Sint16 body_x[4] = {q_x + 0, q_x + 100, q_x + 100, q_x + 0};
     Sint16 body_y[4] = {q_y + 0, q_y + 0, q_y + 20, q_y + 20};
-    Sint16 propellerL_x[7] = {q_x + 0, q_x + 60, q_x + 60, q_x + 0, q_x + -60, q_x + -60, q_x + 0};
-    Sint16 propellerL_y[7] = {q_y + -20, q_y + -40, q_y + 0, q_y + -20, q_y + -40, q_y + 0, q_y + -20};
-    Sint16 propellerP_x[7] = {q_x + 100, q_x + 40, q_x + 40, q_x + 100, q_x + 160, q_x + 160, q_x + 100};
-    Sint16 propellerP_y[7] = {q_y + -20, q_y + -40, q_y + 0, q_y + -20, q_y + -40, q_y + 0, q_y + -20};
+
+    Sint16 propellerL1_x[4] = {q_x_propL + 0*sin(ticks), q_x_propL + 60*sin(ticks), q_x_propL + 60*sin(ticks), q_x_propL + 0*sin(ticks)};
+    Sint16 propellerL1_y[4] = {q_y + 0, q_y + 20, q_y + -20, q_y + 0};
+    Sint16 propellerL2_x[4] = {q_x_propL + 0*sin(ticks), q_x_propL - 60*sin(ticks), q_x_propL - 60*sin(ticks), q_x_propL + 0*sin(ticks)};
+    Sint16 propellerL2_y[4] = {q_y + 0, q_y + 20, q_y + -20, q_y + 0};
+
+    Sint16 propellerP1_x[4] = {q_x_propP + 0*sin(ticks), q_x_propP + 60*sin(ticks), q_x_propP + 60*sin(ticks), q_x_propP + 0*sin(ticks)};
+    Sint16 propellerP1_y[4] = {q_y + 0, q_y + 20, q_y + -20, q_y + 0};
+    Sint16 propellerP2_x[4] = {q_x_propP + 0*sin(ticks), q_x_propP - 60*sin(ticks), q_x_propP - 60*sin(ticks), q_x_propP + 0*sin(ticks)};
+    Sint16 propellerP2_y[4] = {q_y + 0, q_y + 20, q_y + -20, q_y + 0};
 
     SDL_SetRenderDrawColor(gRenderer.get(), 0xFF, 0x33, 0x33, 0xFF);
     SDL_SetRenderDrawColor(gRenderer.get(), 0xFF, 0x57, 0x57, 0x57); // AA, RR, GG, BB
     // filledCircleColor(gRenderer.get(), q_x, q_y, 30, 0xFF0000FF); // 0xRRGGBBAA 
     filledPolygonColor(gRenderer.get(), body_x, body_y, 4, 0xFF575757);
-    bezierColor(gRenderer.get(), propellerL_x, propellerL_y, 7, 5, 0xFF3333FF);
-    bezierColor(gRenderer.get(), propellerP_x, propellerP_y, 7, 5, 0xFF3333FF);
+    bezierColor(gRenderer.get(), propellerL1_x, propellerL1_y, 4, 10, 0xFF3333FF);
+    bezierColor(gRenderer.get(), propellerL2_x, propellerL2_y, 4, 10, 0xFF3333FF);
+    bezierColor(gRenderer.get(), propellerP1_x, propellerP1_y, 4, 10, 0xFF3333FF);
+    bezierColor(gRenderer.get(), propellerP2_x, propellerP2_y, 4, 10, 0xFF3333FF);
+    
 }
