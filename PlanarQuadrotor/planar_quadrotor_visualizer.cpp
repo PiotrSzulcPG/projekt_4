@@ -11,6 +11,7 @@ PlanarQuadrotorVisualizer::PlanarQuadrotorVisualizer(PlanarQuadrotor *quadrotor_
  * #### TODO: Connect speed of propellers to propeller animation
  * #### TODO: Rotate propellers in XY axis?
  */
+
 void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer> &gRenderer) {
     Eigen::VectorXf state = quadrotor_ptr->GetState();
     Sint16 q_x, q_y, q_theta;
@@ -61,8 +62,8 @@ void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer> &gRenderer)
     Sint16 propellerP2_x[4] = {q_x_propP + 0*sin(ticks), q_x_propP - 60*sin(ticks), q_x_propP - 60*sin(ticks), q_x_propP + 0*sin(ticks)};
     Sint16 propellerP2_y[4] = {q_y_propP + 0, q_y_propP + 20, q_y_propP + -20, q_y_propP + 0};
 
-    SDL_SetRenderDrawColor(gRenderer.get(), 0xFF, 0x33, 0x33, 0xFF);
-    SDL_SetRenderDrawColor(gRenderer.get(), 0xFF, 0x57, 0x57, 0x57); // AA, RR, GG, BB
+    // SDL_SetRenderDrawColor(gRenderer.get(), 0xFF, 0x33, 0x34, 0xFF);
+    // SDL_SetRenderDrawColor(gRenderer.get(), 0xFF, 0x57, 0x57, 0x57); // AA, RR, GG, BB
     // filledCircleColor(gRenderer.get(), q_x, q_y, 30, 0xFF0000FF); // 0xRRGGBBAA 
     filledPolygonColor(gRenderer.get(), body_x, body_y, 4, 0xFF575757);
     bezierColor(gRenderer.get(), propellerL1_x, propellerL1_y, 4, 10, 0xFF3333FF);

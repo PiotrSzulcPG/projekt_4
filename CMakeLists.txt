@@ -10,6 +10,12 @@ add_subdirectory(SDL2_gfx)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
+include_directories(${PROJECT_SOURCE_DIR}/irrKlang/include)
+add_library(irrKlang STATIC IMPORTED)
+set_target_properties(irrKlang PROPERTIES
+    IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/irrKlang/lib/irrKlang.lib
+)
+
 CPMAddPackage(
   NAME Eigen
   VERSION 3.4.0
@@ -25,9 +31,18 @@ endif()
 
 set(PLANAR_QUADROTOR_SOURCES PlanarQuadrotor/simulate.cpp PlanarQuadrotor/planar_quadrotor.cpp PlanarQuadrotor/planar_quadrotor_visualizer.cpp PlanarQuadrotor/lqr.cpp)
 add_executable(planar_quadrotor ${PLANAR_QUADROTOR_SOURCES})
+
 if(TARGET SDL2::SDL2main)
     # It has an implicit dependency on SDL2 functions, so it MUST be added before SDL2::SDL2 (or SDL2::SDL2-static)
     target_link_libraries(planar_quadrotor SDL2::SDL2main)
 endif()
-target_link_libraries(planar_quadrotor SDL2::SDL2 SDL2_gfx Eigen matplot)
+
+target_link_libraries(planar_quadrotor SDL2::SDL2 SDL2_gfx Eigen matplot irrKlang)
 target_include_directories(planar_quadrotor PRIVATE ${PROJECT_SOURCE_DIR})
+
+# Kopiowanie pliku irrKlang.dll do katalogu z plikiem wykonywalnym
+add_custom_command(TARGET planar_quadrotor POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${PROJECT_SOURCE_DIR}/irrKlang/bin/irrKlang.dll
+    $<TARGET_FILE_DIR:planar_quadrotor>
+)

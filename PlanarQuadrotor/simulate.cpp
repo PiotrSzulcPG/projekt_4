@@ -3,6 +3,10 @@
 */
 #include "simulate.h"
 #include <set>
+#include <irrKlang.h> // https://www.ambiera.com/irrklang/
+
+using namespace irrklang;
+// #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll, copied from tutorial
 
 Eigen::MatrixXf LQR(PlanarQuadrotor &quadrotor, float dt) {
     /* Calculate LQR gain matrix */
@@ -34,6 +38,13 @@ void control(PlanarQuadrotor &quadrotor, const Eigen::MatrixXf &K) {
 
 int main(int argc, char* args[])
 {  
+    ISoundEngine* audio_engine = createIrrKlangDevice();
+    if (!audio_engine) {
+        return -1;
+    }
+    // #### FIXME: For now the audio isn't working: "Could not open sound file: PlanarQuadrotor/droneFlyingAudio.mp3".
+    ISound* rotor_sound_3D = audio_engine->play3D("PlanarQuadrotor/droneFlyingAudio.mp3", vec3df(0, 0, 0), true, false, true); // #### TODO: Change audio to proper drone sound
+
     std::shared_ptr<SDL_Window> gWindow = nullptr;
     std::shared_ptr<SDL_Renderer> gRenderer = nullptr;
     const int SCREEN_WIDTH = 1280;
@@ -130,6 +141,8 @@ int main(int argc, char* args[])
         throw std::runtime_error("Failed to initialize SDL_Init");
     }
     SDL_Quit();
+    rotor_sound_3D->drop();
+    audio_engine->drop();
     return 0;
 }
 
