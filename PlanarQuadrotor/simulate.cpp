@@ -33,7 +33,7 @@ void control(PlanarQuadrotor &quadrotor, const Eigen::MatrixXf &K) {
 }
 
 int main(int argc, char* args[])
-{
+{  
     std::shared_ptr<SDL_Window> gWindow = nullptr;
     std::shared_ptr<SDL_Renderer> gRenderer = nullptr;
     const int SCREEN_WIDTH = 1280;
@@ -126,6 +126,8 @@ int main(int argc, char* args[])
             control(quadrotor, K);
             quadrotor.Update(dt);
         }
+    } else {
+        throw std::runtime_error("Failed to initialize SDL_Init");
     }
     SDL_Quit();
     return 0;
