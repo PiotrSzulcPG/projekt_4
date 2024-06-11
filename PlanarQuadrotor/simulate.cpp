@@ -42,8 +42,8 @@ int main(int argc, char* args[])
     if (!audio_engine) {
         return -1;
     }
-    // #### FIXME: For now the audio isn't working: "Could not open sound file: PlanarQuadrotor/droneFlyingAudio.mp3".
-    ISound* rotor_sound_3D = audio_engine->play3D("PlanarQuadrotor/droneFlyingAudio.mp3", vec3df(0, 0, 0), true, false, true); // #### TODO: Change audio to proper drone sound
+    // #### TODO: Change sound pitch based on rotor speed
+    ISound* rotor_sound_3D = audio_engine->play3D("../../PlanarQuadrotor/droneFlyingSound.wav", vec3df(0, 0, 0), true, false, true); // #### TODO: Change audio to proper drone sound
 
     std::shared_ptr<SDL_Window> gWindow = nullptr;
     std::shared_ptr<SDL_Renderer> gRenderer = nullptr;

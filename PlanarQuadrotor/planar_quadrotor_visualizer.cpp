@@ -7,7 +7,7 @@ PlanarQuadrotorVisualizer::PlanarQuadrotorVisualizer(PlanarQuadrotor *quadrotor_
  * 1. Transform coordinates from quadrotor frame to image frame so the circle is in the middle of the screen
  * 2. Use more shapes to represent quadrotor (e.x. try replicate http://underactuated.mit.edu/acrobot.html#section3 or do something prettier)
  * 3. OPTIONAL: Animate proppelers (extra points)
- * #### TODO: Audio: sound separately for each ear?, pitch is changing 
+ * #### TODO: Audio: sound separately for each ear?, pitch is changing (see: simulate.cpp)
  * #### TODO: Connect speed of propellers to propeller animation
  * #### TODO: Rotate propellers in XY axis?
  */
@@ -27,8 +27,8 @@ void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer> &gRenderer)
     if (DEBUG) {
         q_x = 100;
         q_y = 100;
-        q_speedL = 10;
-        q_speedP = 10;
+        q_speedL = 100;
+        q_speedP = 100;
         q_theta = 6;
     }
 
