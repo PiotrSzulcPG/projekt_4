@@ -39,7 +39,7 @@ Thumbs.db
 # Added by Piotr Szulc
 # TODO: Check if build/Debug/SDL2d.dll is excluded from .gitignore
 build/*
-!build/Debug
+!build/Debug/SDL2d.dll
 .vs
 /CMakeSettings.json
 .vscode
