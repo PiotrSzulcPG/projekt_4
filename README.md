@@ -6,7 +6,7 @@ Projekt polega na wczytaniu, przetworzeniu oraz zwizualizowaniu sygnałów wyst�
 ## Pobranie projektu
 W celu pobrania zależności (biblioteki Eigen oraz Matplot++), nalezy zaciągnąć repozytorium wraz z submodułami korzystając z flagi `--recursive`
 
-`git clone --recursive https://github.com/marekjg/tp_projekt_4`
+`git clone --recursive https://github.com/PiotrSzulcPG/projekt_4`
 
 ## Budowanie projektu
 Korzystając z Visual Code i dodatku CMake tools, można buować i uruchamiać program z dolnego paska (sposób sprawdzony na windowsie). Można też z linii poleceń:
