@@ -8,9 +8,9 @@ PlanarQuadrotorVisualizer::PlanarQuadrotorVisualizer(PlanarQuadrotor *quadrotor_
  * 2. Use more shapes to represent quadrotor (e.x. try replicate http://underactuated.mit.edu/acrobot.html#section3 or do something prettier)
  * 3. OPTIONAL: Animate proppelers (extra points)
 
- * #### TODO: Audio: sound separately for each ear?, pitch is changing (see: simulate.cpp)
- * #### TODO: Connect speed of propellers to propeller animation
- * #### TODO: Rotate propellers in XY axis?
+ * // TODO: Audio: sound separately for each ear?, change pitch (see: simulate.cpp)
+ * // TODO: Connect speed of propellers to propeller animation
+ * // TODO: Rotate propellers in XY axis?
  */
 
 void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer> &gRenderer) {
@@ -21,7 +21,7 @@ void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer> &gRenderer)
     /* x, y, theta coordinates */
     q_x = state[0];
     q_y = state[1];
-    q_theta = state[2];
+    q_theta = -state[2];
 
 
     bool DEBUG = false;

@@ -40,22 +40,18 @@ int main(int argc, char* args[])
 {  
     ISoundEngine* audio_engine = createIrrKlangDevice();
     if (!audio_engine) {
-        return -1;
+        throw std::runtime_error("Couldn't load audio engine (createIrrKlangDevice() failed)");
     }
-    // #### TODO: Change sound pitch based on rotor speed
-    ISound* rotor_sound_3D = audio_engine->play3D("../../PlanarQuadrotor/droneFlyingSound.wav", vec3df(0, 0, 0), true, false, true); // #### TODO: Change audio to proper drone sound
+    // TODO: Change sound pitch based on rotor speed
+    ISound* rotor_sound_3D = audio_engine->play3D("../../PlanarQuadrotor/droneFlyingSound.wav", vec3df(0, 0, 0), true, false, true);
+    bool mute = false;
 
     std::shared_ptr<SDL_Window> gWindow = nullptr;
     std::shared_ptr<SDL_Renderer> gRenderer = nullptr;
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
     int x, y;
-    /**
-     * # TODO: Extend simulation
-     * 1. Set goal state of the mouse when clicking left mouse button (transform the coordinates to the quadrotor world! see visualizer TODO list)
-     *    [x, y, 0, 0, 0, 0]
-     * 2. Update PlanarQuadrotor from simulation when goal is changed
-    */
+
     Eigen::VectorXf initial_state = Eigen::VectorXf::Zero(6);
     initial_state<<SCREEN_WIDTH/2,SCREEN_HEIGHT/2,0,0,0,0;
     PlanarQuadrotor quadrotor(initial_state);
@@ -72,13 +68,7 @@ int main(int argc, char* args[])
     const float dt = 0.001;
     Eigen::MatrixXf K = LQR(quadrotor, dt);
     Eigen::Vector2f input = Eigen::Vector2f::Zero(2);
-
-    /**
-     * # TODO: Plot x, y, theta over time 
-     * 1. Update x, y, theta history vectors to store trajectory of the quadrotor
-     * 2. Plot trajectory using matplot++ when key 'p' is clicked
-     * # FIXME: Crash while creating graph (potential cause: no data in vectors)
-    */
+    
     std::vector<float> x_history;
     std::vector<float> y_history;
     std::vector<float> theta_history;
@@ -93,6 +83,16 @@ int main(int argc, char* args[])
 
         while (!quit)
         {
+            // get data from GetState and history
+            state = quadrotor.GetState();
+            int q_x = state[0];
+            int q_y = state[1];
+            int q_theta = state[2];
+
+            x_history.push_back(q_x);
+            y_history.push_back(q_y);
+            theta_history.push_back(q_theta);
+
             //events
             while (SDL_PollEvent(&e) != 0)
             {
@@ -109,21 +109,38 @@ int main(int argc, char* args[])
                 else if (e.type == SDL_MOUSEBUTTONDOWN)
                 {
                     std::cout << "MOUSE CLICKED!! Position of click: "<< x << ", " << y << std::endl;
-                    float new_x =static_cast<float>(x)/SCREEN_WIDTH;
-                    float new_y = static_cast<float>(y)/SCREEN_HEIGHT;
+                    float new_x =static_cast<float>(x);
+                    float new_y = static_cast<float>(y);
                     goal_state << new_x, new_y, 0, 0, 0, 0;
                     quadrotor.SetGoal(goal_state);
                 }
                 else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_p) 
-                {
+                { // plot based on https://github.com/alandefreitas/matplotplusplus/blob/master/examples/line_plot/plot/plot_9.cpp
                     std::cout << "KEY CLICKED (P): " << SDL_GetKeyName('p') << std::endl;
-                    std::set<std::vector<float>> Y = {x_history, y_history, theta_history};
-                    matplot::plot(Y);
+                    std::cout << "Simulation ended. Number of data to process: " << x_history.size() <<". Plotting... ";
+                    std::set<std::vector<float>> XY = {x_history, y_history};
+                    matplot::tiledlayout(2, 1);;
+                    auto xy = matplot::nexttile();
+                    auto plotted = matplot::plot(xy, XY);
+                    matplot::ylabel("X, Y");
+                    auto th = matplot::nexttile();
+                    matplot::plot(th, theta_history);
+                    matplot::xlabel("ticks");
+                    matplot::ylabel("theta");
                     matplot::show();
-                    std::cout << "Plotting x, y, theta!" << std::endl;
-                    // # TODO: Collect history of x, y, theta and store in vectors
+                    std::cout << "Plotting finished";
                 }
-                
+                else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_m) 
+                {
+                    if (mute) {
+                        mute = false;
+                        rotor_sound_3D->setVolume(1);
+                    } else {
+                        mute = true;
+                        rotor_sound_3D->setVolume(0);
+                    }
+                }
+                // rotor_sound_3D->setPlaybackSpeed(2);
             }
 
             SDL_Delay((int) dt * 1000);
@@ -139,6 +156,8 @@ int main(int argc, char* args[])
             /* Simulate quadrotor forward in time */
             control(quadrotor, K);
             quadrotor.Update(dt);
+
+            
         }
     } else {
         throw std::runtime_error("Failed to initialize SDL_Init");
