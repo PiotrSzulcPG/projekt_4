@@ -57,6 +57,7 @@ int main(int argc, char* args[])
      * 2. Update PlanarQuadrotor from simulation when goal is changed
     */
     Eigen::VectorXf initial_state = Eigen::VectorXf::Zero(6);
+    initial_state<<SCREEN_WIDTH/2,SCREEN_HEIGHT/2,0,0,0,0;
     PlanarQuadrotor quadrotor(initial_state);
     PlanarQuadrotorVisualizer quadrotor_visualizer(&quadrotor);
     /**
@@ -65,7 +66,7 @@ int main(int argc, char* args[])
      * For implemented LQR controller, it has to be [x, y, 0, 0, 0, 0]
     */
     Eigen::VectorXf goal_state = Eigen::VectorXf::Zero(6);
-    goal_state << 0, 0, 0, 0, 0, 0;
+    goal_state << 250, 100, 0, 0, 0, 0;
     quadrotor.SetGoal(goal_state);
     /* Timestep for the simulation */
     const float dt = 0.001;
@@ -108,19 +109,19 @@ int main(int argc, char* args[])
                 else if (e.type == SDL_MOUSEBUTTONDOWN)
                 {
                     std::cout << "MOUSE CLICKED!! Position of click: "<< x << ", " << y << std::endl;
-                    goal_state << x, y, 10, 10, 10, 10;
-                    std::cout << "KEY CLICKED (P): " << SDL_GetKeyName('p') << std::endl;
+                    float new_x =static_cast<float>(x)/SCREEN_WIDTH;
+                    float new_y = static_cast<float>(y)/SCREEN_HEIGHT;
+                    goal_state << new_x, new_y, 0, 0, 0, 0;
+                    quadrotor.SetGoal(goal_state);
                 }
-                else if (e.type == SDL_KEYDOWN) 
+                else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_p) 
                 {
-                    if (e.key.keysym.sym == SDLK_p)
-                    {
-                        std::set<std::vector<float>> Y = {x_history, y_history, theta_history};
-                        matplot::plot(Y);
-                        matplot::show();
-                        std::cout << "Plotting x, y, theta!" << std::endl;
-                        // # TODO: Collect history of x, y, theta and store in vectors
-                    }
+                    std::cout << "KEY CLICKED (P): " << SDL_GetKeyName('p') << std::endl;
+                    std::set<std::vector<float>> Y = {x_history, y_history, theta_history};
+                    matplot::plot(Y);
+                    matplot::show();
+                    std::cout << "Plotting x, y, theta!" << std::endl;
+                    // # TODO: Collect history of x, y, theta and store in vectors
                 }
                 
             }

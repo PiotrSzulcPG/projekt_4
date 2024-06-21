@@ -24,7 +24,7 @@ void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer> &gRenderer)
     q_theta = state[2];
 
 
-    bool DEBUG = true;
+    bool DEBUG = false;
     if (DEBUG) {
         q_x = 100;
         q_y = 100;
